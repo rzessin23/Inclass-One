@@ -1,0 +1,295 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red109\green109\blue109;\red32\green32\blue32;\red153\green168\blue186;
+\red86\green132\blue173;\red191\green100\blue38;\red88\green118\blue71;\red160\green0\blue163;\red128\green63\blue122;
+\red254\green187\blue91;\red117\green114\blue185;}
+{\*\expandedcolortbl;;\csgenericrgb\c42745\c42745\c42745;\csgenericrgb\c12549\c12549\c12549;\csgenericrgb\c60000\c65882\c72941;
+\csgenericrgb\c33725\c51765\c67843;\csgenericrgb\c74902\c39216\c14902;\csgenericrgb\c34510\c46275\c27843;\csgenericrgb\c62745\c0\c63922;\csgenericrgb\c50196\c24706\c47843;
+\csgenericrgb\c99608\c73333\c35686;\csgenericrgb\c45882\c44706\c72549;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs26 \cf2 \cb3 # Dr Michaels\
+# game.py\
+# 3/30/22\
+# This file contains information on a card and deck class.\
+# Together we will build a player class\
+# Then begin designing rules for a game\
+\
+# Global variables used to create a new deck\
+\cf4 face = [\cf5 2\cf6 , \cf5 3\cf6 , \cf5 4\cf6 , \cf5 5\cf6 , \cf5 6\cf6 , \cf5 7\cf6 , \cf5 8\cf6 , \cf5 9\cf6 , \cf5 10\cf6 , \cf5 11\cf6 , \cf5 12\cf6 , \cf5 13\cf6 , \cf5 14\cf4 ]\
+suit = [\cf7 "Clubs"\cf6 , \cf7 "Diamonds"\cf6 , \cf7 "Hearts"\cf6 , \cf7 "Spades"\cf4 ]\
+\
+\cf6 import \cf4 random\
+\
+\cf6 class \cf4 Card:\
+    \cf2 # Constructor method for Card.\
+    # Takes as input a face and suit value.\
+    # If they are not found in the global variables above, the card will be set to a 2 of clubs\
+    \cf6 def \cf8 __init__\cf4 (\cf9 self\cf6 , \cf4 the_face\cf6 , \cf4 the_suit):\
+        \cf6 global \cf4 face\cf6 , \cf4 suit\
+        \cf6 if \cf4 (the_face \cf6 in \cf4 face \cf6 and \cf4 the_suit \cf6 in \cf4 suit):\
+            \cf9 self\cf4 .face = the_face\
+            \cf9 self\cf4 .suit = the_suit\
+        \cf6 else\cf4 :\
+            \cf2 #print("Illegal card value, creating a 2 of Clubs")\
+            \cf9 self\cf4 .face = -\cf5 1\
+            \cf9 self\cf4 .suit = \cf7 "ILLEGAL CARD"\
+\
+    \cf2 # Retuns the suit value of the calling card\
+    \cf6 def \cf10 get_suit\cf4 (\cf9 self\cf4 ):\
+        \cf6 return \cf9 self\cf4 .suit\
+\
+    \cf2 # Returns the face value of the calling card\
+    \cf6 def \cf10 get_face\cf4 (\cf9 self\cf4 ):\
+        \cf6 return \cf9 self\cf4 .face\
+\
+    \cf2 # Compares the face and suit attributes of other_card to those possessed by the calling card\
+    \cf6 def \cf8 __eq__\cf4 (\cf9 self\cf6 , \cf4 other_card):\
+        \cf6 return \cf4 (\cf9 self\cf4 .face == other_card.get_face()) \cf6 and \cf4 (\cf9 self\cf4 .suit == other_card.get_suit())\
+\
+    \cf2 # Returns the value of self > other_card\
+    # The first comparison is on face value. If the faces are different, we return the result of\
+    # self.face > other_card.get_face()\
+    # If they are tied, we return the result of self.suit > other_card.get_suit()\
+    \cf6 def \cf8 __gt__\cf4 (\cf9 self\cf6 , \cf4 other_card):\
+        \cf6 if \cf9 self\cf4 .face > other_card.get_face():\
+            \cf6 return True\
+        elif \cf4 (\cf9 self\cf4 .face == other_card.get_face()):\
+            \cf6 return \cf9 self\cf4 .suit > other_card.get_suit()\
+        \cf6 else\cf4 :\
+            \cf6 return False\
+\
+    \cf2 # Card tostring. Will return the card in the format "Face of Suit"\
+    \cf6 def \cf8 __str__\cf4 (\cf9 self\cf4 ):\
+        \cf6 return \cf7 "%s of %s" \cf4 % (\cf9 self\cf4 .face\cf6 , \cf9 self\cf4 .suit)\
+\
+\
+\cf6 class \cf4 Deck:\
+\
+    \cf2 # The constructor method for the Deck.\
+    # It takes no parameters.\
+    # It fills a deck with 52 unique card, and then uses random.shuffle to randomly order the deck\
+    # The counter will be used to indicate which card is at the "top" of the deck\
+    # i.e. all cards above counter will have been dealt\
+    \cf6 def \cf8 __init__\cf4 (\cf9 self\cf4 ):\
+        \cf9 self\cf4 .deck = []\
+        \cf9 self\cf4 .counter = \cf5 0\
+        \cf6 global \cf4 face\
+        \cf6 global \cf4 suit\
+        \cf6 for \cf4 the_face \cf6 in \cf4 face:\
+            \cf6 for \cf4 the_suit \cf6 in \cf4 suit:\
+                \cf9 self\cf4 .deck.append(Card(the_face\cf6 , \cf4 the_suit))\
+        \cf6 for \cf4 i \cf6 in \cf11 range\cf4 (\cf5 7\cf4 ):\
+            random.shuffle(\cf9 self\cf4 .deck)\
+\
+    \cf2 # Returns the top card of the deck if it exists (if we have not previously dealt 52 cards)\
+    # We could add in a method to automatically shuffle the deck if we reach this point\
+    \cf6 def \cf10 deal\cf4 (\cf9 self\cf4 ):\
+        \cf6 if \cf9 self\cf4 .counter < \cf5 52\cf4 :\
+            result = \cf9 self\cf4 .deck[\cf9 self\cf4 .counter]\
+            \cf9 self\cf4 .counter += \cf5 1\
+            \cf6 return \cf4 result\
+        \cf6 else\cf4 :\
+            \cf11 print\cf4 (\cf7 "No more cards to deal. The deck is empty."\cf4 )\
+            \cf6 return None\
+\
+    \cf2 # Randomly shuffles the deck array seven times.\
+    \cf6 def \cf10 shuffle\cf4 (\cf9 self\cf4 ):\
+        \cf9 self\cf4 .counter = \cf5 0\
+        \cf6 for \cf4 i \cf6 in \cf11 range\cf4 (\cf5 7\cf4 ):\
+            random.shuffle(\cf9 self\cf4 .deck)\
+\
+    \cf2 # tostring method for deck class.\
+    # Prints out all 52 cards in the deck, one per line.\
+    # We indicate with an X cards that have been dealt\
+    # << Current Top Card indicates which card is the current top of the deck.\
+    \cf6 def \cf8 __str__\cf4 (\cf9 self\cf4 ):\
+        result = \cf7 ""\
+        \cf6 for \cf4 i \cf6 in \cf11 range\cf4 (\cf5 52\cf4 ):\
+            \cf6 if \cf4 i == \cf9 self\cf4 .counter:\
+                result += \cf7 "%s << Current Top Card\cf6 \\n\cf7 " \cf4 % \cf9 self\cf4 .deck[i]\
+            \cf6 elif \cf4 i < \cf9 self\cf4 .counter:\
+                result += \cf7 "%s X\cf6 \\n\cf7 " \cf4 % \cf9 self\cf4 .deck[i]\
+            \cf6 else\cf4 :\
+                result += \cf7 "%s\cf6 \\n\cf7 " \cf4 % \cf9 self\cf4 .deck[i]\
+        \cf6 return \cf4 result\
+\
+\
+\
+\cf2 # A class which defines the Game of War.\
+# The rules of war are as follows:\
+	# 2 Players\
+	# 1 Deck of cards (52 unique cards)\
+	# Could change/expand the base datapoints\
+	# Deal the cards\
+	# Cycle of Play\
+		# Round by round/turn by turn\
+		# Each player draws a card, and presents it (c1 and c2)\
+		# If c1 > c2, P1 wins, and gets both cards into their discard\
+		# If c2 > c1, P2 wins, ...\
+		# There is no possibility of tie (This will change)\
+		# Play continues until no cards are in the hand (at the start, 26 rounds/turns will go by)\
+		# shuffle the discard pile into the hand, and play continues\
+	# Win Condition:\
+		# Default is one of the players has all 52 cards\
+		# We'll look at two possibilities:\
+			# X Turns of have passed, the player with more cards wins\
+			# Once a player has X number of cards total (hand + discard)\
+\cf6 class \cf4 War_Game:\
+\
+    \cf2 # The init method. It defines both players and the deck.\
+    \cf6 def \cf8 __init__\cf4 (\cf9 self\cf6 , \cf4 num_players):\
+        \cf9 self\cf4 .deck = Deck()\
+        \cf9 self\cf4 .players = []\
+        \cf6 if \cf4 num_players < \cf5 2\cf4 :\
+            num_players = \cf5 2\
+        \cf6 elif \cf4 num_players > \cf5 8\cf4 :\
+            num_players = \cf5 8\
+        \cf6 for \cf4 i \cf6 in \cf11 range\cf4 (num_players):\
+            name = \cf7 "Player %d" \cf4 % (i+\cf5 1\cf4 )\
+            \cf9 self\cf4 .players.append(War_Player(name))\
+\
+    \cf6 def \cf10 deal_cards\cf4 (\cf9 self\cf4 ):\
+        \cf2 # Assumes hands are empty\
+        \cf9 self\cf4 .deck.shuffle()\
+        counter = \cf5 0\
+        \cf6 while\cf4 (\cf9 self\cf4 .players[\cf5 0\cf4 ].get_hand_size() < \cf5 26\cf4 ):\
+            \cf6 for \cf4 player \cf6 in \cf9 self\cf4 .players:\
+                player.add_card_hand(\cf9 self\cf4 .deck.deal())\
+                counter += \cf5 1\
+                \cf6 if \cf4 counter == \cf5 52\cf4 :\
+                    \cf9 self\cf4 .deck.shuffle()\
+                    counter = \cf5 0\
+\
+    \cf6 def \cf10 initialize_game\cf4 (\cf9 self\cf4 ):\
+        \cf6 for \cf4 player \cf6 in \cf9 self\cf4 .players:\
+            player.reset_player()\
+        \cf9 self\cf4 .deal_cards()\
+\
+    \cf6 def \cf10 play_round\cf4 (\cf9 self\cf4 ):\
+        \cf2 # Get a card from all players, and find the biggest\
+        \cf4 cards = []\
+        \cf6 for \cf4 player \cf6 in \cf9 self\cf4 .players:\
+            cards.append(player.play_card())\
+\
+        winner = cards.index(\cf11 max\cf4 (cards))\
+        \cf9 self\cf4 .players[winner].add_card_discard(cards)\
+\
+    \cf6 def \cf10 game_won\cf4 (\cf9 self\cf4 ):\
+        result = -\cf5 1\
+        \cf6 for \cf4 i \cf6 in \cf11 range\cf4 (\cf11 len\cf4 (\cf9 self\cf4 .players)):\
+            \cf6 if \cf9 self\cf4 .players[i].get_total_cards() >= \cf5 39\cf4 :\
+                result = i\
+                \cf6 return \cf4 result\
+        \cf6 return \cf4 result\
+\
+    \cf6 def \cf10 check_shuffle\cf4 (\cf9 self\cf4 ):\
+        \cf6 for \cf4 player \cf6 in \cf9 self\cf4 .players:\
+            \cf6 if \cf4 player.get_hand_size() == \cf5 0\cf4 :\
+                player.shuffle_discard()\
+\
+    \cf6 def \cf10 play_game\cf4 (\cf9 self\cf4 ):\
+        check_win = \cf9 self\cf4 .game_won()\
+        counter = \cf5 0\
+        \cf6 while\cf4 (check_win == -\cf5 1\cf4 ):\
+            \cf9 self\cf4 .check_shuffle()\
+            \cf9 self\cf4 .play_round()\
+            counter += \cf5 1\
+            \cf4 check_win = \cf9 self\cf4 .game_won()\
+        \cf11 print\cf4 (\cf7 "The game is over! %s has won the game!" \cf4 % \cf9 self\cf4 .players[check_win].get_name())\
+        \cf11 print\cf4 (\cf7 "The game took %d rounds to finish!" \cf4 % counter)\
+        \cf6 for \cf4 i \cf6 in \cf11 range\cf4 (\cf11 len\cf4 (\cf9 self\cf4 .players)):\
+            \cf6 if \cf4 i == check_win:\
+                \cf9 self\cf4 .players[i].add_win()\
+            \cf6 else\cf4 :\
+                \cf9 self\cf4 .players[i].add_loss()\
+\
+\
+    \cf2 # Tostring for War_Game\
+    \cf6 def \cf8 __str__\cf4 (\cf9 self\cf4 ):\
+        result = \cf7 "CURRENT GAME STATUS\cf6 \\n\cf7 "\
+        \cf6 for \cf4 player \cf6 in \cf9 self\cf4 .players:\
+            result += \cf7 "%s\cf6 \\n\\n\cf7 " \cf4 % player\
+        \cf6 return \cf4 result\
+\
+\
+\cf6 class \cf4 War_Player:\
+\
+    \cf6 def \cf8 __init__\cf4 (\cf9 self\cf6 , \cf4 name):\
+        \cf9 self\cf4 .hand = []\
+        \cf9 self\cf4 .discard = []\
+        \cf9 self\cf4 .record = [\cf5 0\cf6 ,\cf5 0\cf4 ] \cf2 # Wins/Losses\
+        \cf9 self\cf4 .myname = name\
+\
+    \cf6 def \cf10 get_name\cf4 (\cf9 self\cf4 ):\
+        \cf6 return \cf9 self\cf4 .myname\
+\
+    \cf6 def \cf10 add_card_hand\cf4 (\cf9 self\cf6 , \cf4 my_card):\
+        \cf9 self\cf4 .hand.append(my_card)\
+\
+    \cf6 def \cf10 add_card_discard\cf4 (\cf9 self\cf6 , \cf4 cards_won):\
+        \cf6 for \cf4 my_card \cf6 in \cf4 cards_won:\
+            \cf9 self\cf4 .discard.append(my_card)\
+\
+    \cf6 def \cf10 reset_player\cf4 (\cf9 self\cf4 ):\
+        \cf9 self\cf4 .hand = []\
+        \cf9 self\cf4 .discard = []\
+\
+    \cf6 def \cf10 play_card\cf4 (\cf9 self\cf4 ):\
+        \cf6 return \cf9 self\cf4 .hand.pop()\
+\
+    \cf6 def \cf10 get_hand_size\cf4 (\cf9 self\cf4 ):\
+        \cf6 return \cf11 len\cf4 (\cf9 self\cf4 .hand)\
+\
+    \cf6 def \cf10 get_discard_size\cf4 (\cf9 self\cf4 ):\
+        \cf6 return \cf11 len\cf4 (\cf9 self\cf4 .discard)\
+\
+    \cf6 def \cf10 get_total_cards\cf4 (\cf9 self\cf4 ):\
+        \cf6 return \cf11 len\cf4 (\cf9 self\cf4 .discard) + \cf11 len\cf4 (\cf9 self\cf4 .hand)\
+\
+    \cf6 def \cf10 shuffle_discard\cf4 (\cf9 self\cf4 ):\
+        \cf2 # Shuffle discard and then add to Hand, while removing from discard\
+        \cf6 for \cf4 i \cf6 in \cf11 range\cf4 (\cf5 7\cf4 ):\
+            random.shuffle(\cf9 self\cf4 .discard)\
+        \cf6 while\cf4 (\cf11 len\cf4 (\cf9 self\cf4 .discard) > \cf5 0\cf4 ):\
+            \cf9 self\cf4 .add_card_hand(\cf9 self\cf4 .discard.pop())\
+\
+    \cf6 def \cf10 add_win\cf4 (\cf9 self\cf4 ):\
+        \cf9 self\cf4 .record[\cf5 0\cf4 ] += \cf5 1\
+\
+    \cf6 def \cf10 add_loss\cf4 (\cf9 self\cf4 ):\
+        \cf9 self\cf4 .record[\cf5 1\cf4 ] += \cf5 1\
+\
+\
+    \cf6 def \cf8 __str__\cf4 (\cf9 self\cf4 ):\
+        result = \cf7 "%s\cf6 \\n\cf7 " \cf4 % \cf9 self\cf4 .myname\
+        result += \cf7 "Wins: %d Losses: %d\cf6 \\n\cf7 " \cf4 % (\cf9 self\cf4 .record[\cf5 0\cf4 ]\cf6 , \cf9 self\cf4 .record[\cf5 1\cf4 ])\
+        result += \cf7 "Hand: "\
+        \cf6 for \cf4 item \cf6 in \cf9 self\cf4 .hand:\
+            result += \cf7 "%s, " \cf4 % item\
+        result += \cf7 "\cf6 \\n\cf7 Discard: "\
+        \cf6 for \cf4 item \cf6 in \cf9 self\cf4 .discard:\
+            result += \cf7 "%s, " \cf4 % item\
+        \cf6 return \cf4 result\
+\
+\
+\
+\cf6 def \cf10 main\cf4 ():\
+\
+    my_game = War_Game(\cf5 4\cf4 )\
+    \cf11 print\cf4 (\cf7 "Time to play the game!"\cf4 )\
+    \cf11 print\cf4 (\cf7 "First we must do testing!"\cf4 )\
+    \cf2 # my_game.deal_cards()\
+    # print(my_game)\
+    \cf6 for \cf4 i \cf6 in \cf11 range\cf4 (\cf5 10\cf4 ):\
+        my_game.initialize_game()\
+        my_game.play_game()\
+    \cf11 print\cf4 (\cf7 "\cf6 \\n\\n\\n\cf7 %s" \cf4 % my_game)\
+\
+\
+\
+\
+main()\
+\
+}
